@@ -13,24 +13,27 @@ set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang++")
 
 find_package(PkgConfig REQUIRED)
 
+
+find_package(PythonLibs 3.12.2 REQUIRED)
+find_package(Boost  REQUIRED COMPONENTS python)
+
 pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavformat libavcodec libavutil libswscale libavfilter libswresample) 
 
 set(SOURCE_FILES get_audio.cpp)
+
+#生成动态库
+set(BUILD_SHARED_LIBS TURE)
 
 
 # 注意引入
 # add_executable(${APP_NAME} ${SOURCE_FILES} )
 add_library(${APP_NAME} ${SOURCE_FILES})
 
-#生成动态库
-# set(BUILD_SHARED_LIBS TURE)
-# set(SOURCE_FILES utils.c)
-
 
 
 target_link_libraries(${APP_NAME} PkgConfig::FFMPEG)
-
-
+target_link_libraries(${APP_NAME} Boost::python ${PYTHON_LIBRARIES})
+include_directories(${PYTHON_INCLUDE_DIRS})
 
 # ##### 引入静态库
 # add_library(libmp3lame STATIC IMPORTED)

@@ -3,7 +3,9 @@ extern "C" {
 #include <libavutil/log.h>
 #include <libavformat/avformat.h>
 }
+#include <boost/python.hpp>
 using namespace std;
+using namespace boost::python;
 // aac每帧开头都要填写对应的格式信息
 void adts_header(char *szAdtsHeader, int dataLen){
 
@@ -132,6 +134,13 @@ string get_audio(string input_filename){
 
 }
 
+char const* get_audio_wrapper(std::string input_filename) {
+  return string_to_char(get_audio(input_filename));
+}
+
+BOOST_PYTHON_MODULE(mymodule) {
+    def("get_audio",get_audio_wrapper);
+}
 
 int main(int argc, char *argv[]) {
     //输入和输出文件名称
